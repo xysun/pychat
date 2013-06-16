@@ -1,16 +1,16 @@
 pychat
 ======
 
-A Python chat server, with multiple chat rooms. 
+A Python chat server, with multiple chat rooms, without any frameworks. 
 
 ### How to use:
-* Download and unzip all the files. You'll also need Python 3 installed.
+* Download and unzip all the files. You'll also need Python 3 installed. (You can download Python 3 from [here](http://python.org/download/releases/3.3.2/)
 * To fire up server: 
 
 "host"(optional) is the ip address your server is running on. It'll default to '', i.e. accepting all connections. 
 
 ```python
-python3 pychat_server.py [<host>]
+python3 pychat_server.py [host]
 ```
 
 * To fire up client: "host"(not optional) should be the same ip address as the server
@@ -85,7 +85,7 @@ Listing current rooms...
 room1: 1 player(s)
 
 ><join> room1
-room1 welcomes: jason@('127.0.0.1', 61935) # you should also see this message in Client1's window
+room1 welcomes: jason@('127.0.0.1', 61935) # you will also see this message in Client1's window
 
 ><list>
 Listing current rooms...
@@ -95,7 +95,7 @@ room1: 2 player(s)
 jason@('127.0.0.1', 61935):hi
 
 ><join> room2 # switch to a new room
-room2 welcomes: jason@('127.0.0.1', 61935) # you should see a "leaving message" in Client1's window
+room2 welcomes: jason@('127.0.0.1', 61935) # you will see a "leaving message" in Client1's window
 
 ><list>
 Listing current rooms...
@@ -109,10 +109,10 @@ Bye
 ```
 
 ### To do:
-* Pass HOST at command-line [DONE]
+* Pass HOST as command-line args [DONE]
 * At first connect:
     * Prompt for username [DONE]
-    * Prompt for instructions [DONE]
+    * Prompt instructions [DONE]
 * Allow view/select/switch/quit rooms
     * view [DONE]
     * switch [DONE]
