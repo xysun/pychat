@@ -44,7 +44,7 @@ class Hall:
         
         instructions = b'Instructions:\n'\
             + b'[<list>] to list all rooms\n'\
-            + b'[<join> room_name] to join/create/switch a room\n' \
+            + b'[<join> room_name] to join/create/switch to a room\n' \
             + b'[<manual>] to show instructions\n' \
             + b'[<quit>] to quit\n' \
             + b'Otherwise start typing and enjoy!' \
@@ -53,7 +53,7 @@ class Hall:
         print(player.name + " says: " + msg)
         if "name:" in msg:
             name = msg.split()[1]
-            new_player = Player(sock, name + "@" + str(sock.getsockname()))
+            new_player = Player(sock, name + "@" + str(sock.getpeername()))
             self.players.append(new_player)
             print("New connection from:", new_player.name)
             sock.sendall(instructions)
@@ -68,7 +68,7 @@ class Hall:
                         same_room = True
                     else: # switch
                         old_room = self.room_player_map[player.name]
-                        self.rooms[old_room].players.remove(player)
+                        self.rooms[old_room].remove_player(player)
                 if not same_room:
                     if not room_name in self.rooms: # new room:
                         new_room = Room(room_name)
