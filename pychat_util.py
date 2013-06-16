@@ -17,7 +17,6 @@ def create_socket(address):
     print("Now listening at ", address)
     return s
 
-
 class Hall:
     def __init__(self):
         self.rooms = {} # {room_name: Room}
@@ -26,13 +25,13 @@ class Hall:
         self.player_count = 0
 
     def welcome_new(self, new_socket):
-        new_socket.sendall(b'Welcome!\nPlease tell us your name:\n')
+        new_socket.sendall(b'Welcome to pychat.\nPlease tell us your name:\n')
 
     def list_rooms(self, sock):
         
         if len(self.rooms) == 0:
             msg = 'Oops, no active rooms currently. Create your own!\n' \
-                + 'Use [<join> room_name] to create a room\n'
+                + 'Use [<join> room_name] to create a room.\n'
             sock.sendall(msg.encode())
         else:
             msg = 'Listing current rooms...\n'
@@ -48,7 +47,7 @@ class Hall:
             + b'[<join> room_name] to join/create/switch a room\n' \
             + b'[<manual>] to show instructions\n' \
             + b'[<quit>] to quit\n' \
-            + b'Otherwise start typing!' \
+            + b'Otherwise start typing and enjoy!' \
             + b'\n'
 
         print(player.name + " says: " + msg)
@@ -99,7 +98,6 @@ class Hall:
                     + 'Use [<list>] to see available rooms! \n' \
                     + 'Use [<join> room_name] to join a room! \n'
                 sock.sendall(msg.encode())
-            pass
     
     def remove_player(self, player):
         if player.name in self.room_player_map:
@@ -119,9 +117,6 @@ class Room:
     def __init__(self, name):
         self.players = [] # a list of sockets
         self.name = name
-
-    def handle_msg(self, f, from_player): # receive msg from from_player, broadcast f(msg)
-        pass
 
     def welcome_new(self, from_player):
         msg = self.name + " welcomes: " + from_player.name + '\n'

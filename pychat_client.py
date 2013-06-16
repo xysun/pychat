@@ -27,7 +27,8 @@ while True:
         if s is sock: # incoming message 
             msg = sock.recv(READ_BUFFER)
             if not msg:
-                print("msg empty!")
+                print("Server down!")
+                sys.exit(2)
             else:
                 if msg == pychat_util.QUIT_STRING.encode():
                     sys.stdout.write('Bye\n')
