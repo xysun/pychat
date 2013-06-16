@@ -5,17 +5,21 @@ A Python chat server, with multiple chat rooms.
 
 ### How to use:
 * Download and unzip all the files. You'll also need Python 3 installed.
-* To fire up server:
+* To fire up server: 
+
+"host"(optional) is the ip address your server is running on. It'll default to '', i.e. accepting all connections. 
+
 ```python
-# "host" is the ip address your server is running on. It'll default to '', i.e. accepting all connections to the machine.
 python3 pychat_server.py [<host>]
 ```
-* To fire up client:
+
+* To fire up client: "host"(not optional) should be the same ip address as the server
+
 ```python
-# "host" should be the same ip address as the server
 python3 pychat_client.py host
 ```
-    Once running client, you'll see prompts and instructions. 
+
+Once running client, you'll see prompts and instructions. 
 
 ### Example:
 * Text following "$" are command-line inputs
@@ -29,7 +33,7 @@ $ python3 pychat_server.py 127.0.0.1
 Now listening at ('127.0.0.1', 22222)
 ```
 
-Client 1: (create a new chat room "room1")
+Client1: (create a new chat room "room1")
 
 ```
 $ python3 pychat_client.py 127.0.0.1
@@ -58,7 +62,7 @@ Listing current rooms...
 room1: 1 player(s)
 ```
 
-Client 2 (join room1 that Client 1 just created and starts conversation)
+Client2 (joins room1 that Client1 just created and starts conversation)
 
 ```
  # open a new terminal
@@ -76,12 +80,12 @@ Instructions:
 [<quit>] to quit
 Otherwise start typing and enjoy!
 
-><list> # you should see room1 created by Client 1
+><list> # you should see room1 created by Client1
 Listing current rooms...
 room1: 1 player(s)
 
 ><join> room1
-room1 welcomes: jason@('127.0.0.1', 61935) # you should also see this message in Client 1's window
+room1 welcomes: jason@('127.0.0.1', 61935) # you should also see this message in Client1's window
 
 ><list>
 Listing current rooms...
@@ -91,14 +95,14 @@ room1: 2 player(s)
 jason@('127.0.0.1', 61935):hi
 
 ><join> room2 # switch to a new room
-room2 welcomes: jason@('127.0.0.1', 61935) # you should see a "leaving message" in Client 1's window
+room2 welcomes: jason@('127.0.0.1', 61935) # you should see a "leaving message" in Client1's window
 
 ><list>
 Listing current rooms...
 room1: 1 player(s)
 room2: 1 player(s)
 
->hi # client 1 will no longer see this
+>hi # Client1 will no longer see this
 
 ><quit>
 Bye
