@@ -15,22 +15,23 @@ connection_list = []
 connection_list.append(listen_sock)
 
 while True:
-    read_sockets, write_socket, error_sockets = select.select(connection_list, [], [])
-    for sock in read_sockets:
-        if sock is listen_sock: # new connection
-            new_socket, add = sock.accept()
-            connection_list.append(new_socket)
-            new_socket.setblocking(0)
-            hall.welcome_new(new_socket)
+    # Player.fileno()
+    read_players, write_players, error_sockets = select.select(connection_list, [], [])
+    for player in read_players:
+        if player is listen_sock: # new connection, player is a socket
+            new_socket, add = player.accept()
+            new_player = Player(new_socket)
+            connection_list.append(new_player)
+            hall.welcome_new(new_player)
 
         else: # new message
-            msg = sock.recv(READ_BUFFER)
+            msg = player.socket.recv(READ_BUFFER)
             if msg:
                 msg = msg.decode().lower()
-                hall.handle_msg(sock, msg)
+                hall.handle_msg(player, msg)
             else:
-                sock.close()
-                connection_list.remove(sock)
+                player.socket.close()
+                connection_list.remove(player)
 
     for sock in error_sockets: # close error sockets
         sock.close()

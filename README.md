@@ -4,7 +4,7 @@ pychat
 A Python chat server, with multiple chat rooms, without any frameworks. 
 
 ### How to use:
-* Download and unzip all the files. You'll also need Python 3 installed. (You can download Python 3 from [here](http://python.org/download/releases/3.3.2/)
+* Download and unzip all the files. You'll also need Python 3 installed. (You can download Python 3 from [here](http://python.org/download/releases/3.3.2/))
 * To fire up server: 
 
 "host"(optional) is the ip address your server is running on. It'll default to '', i.e. accepting all connections. 

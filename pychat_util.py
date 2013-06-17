@@ -20,27 +20,24 @@ def create_socket(address):
 class Hall:
     def __init__(self):
         self.rooms = {} # {room_name: Room}
-        self.players = [] # [Player1, player2, ...]
         self.room_player_map = {} # {playerName: roomName}
-        self.player_count = 0
 
-    def welcome_new(self, new_socket):
-        new_socket.sendall(b'Welcome to pychat.\nPlease tell us your name:\n')
+    def welcome_new(self, new_player):
+        new_player.socket.sendall(b'Welcome to pychat.\nPlease tell us your name:\n')
 
-    def list_rooms(self, sock):
+    def list_rooms(self, player):
         
         if len(self.rooms) == 0:
             msg = 'Oops, no active rooms currently. Create your own!\n' \
                 + 'Use [<join> room_name] to create a room.\n'
-            sock.sendall(msg.encode())
+            player.socket.sendall(msg.encode())
         else:
             msg = 'Listing current rooms...\n'
             for room in self.rooms:
                 msg += room + ": " + str(len(self.rooms[room].players)) + " player(s)\n"
-            sock.sendall(msg.encode())
+            player.socket.sendall(msg.encode())
     
-    def handle_msg(self, sock, msg):
-        player = self.find_player(sock)
+    def handle_msg(self, player, msg):
         
         instructions = b'Instructions:\n'\
             + b'[<list>] to list all rooms\n'\
@@ -53,10 +50,9 @@ class Hall:
         print(player.name + " says: " + msg)
         if "name:" in msg:
             name = msg.split()[1]
-            new_player = Player(sock, name + "@" + str(sock.getpeername()))
-            self.players.append(new_player)
-            print("New connection from:", new_player.name)
-            sock.sendall(instructions)
+            player.name = name
+            print("New connection from:", player.name)
+            player.socket.sendall(instructions)
 
         elif "<join>" in msg:
             same_room = False
@@ -64,7 +60,7 @@ class Hall:
                 room_name = msg.split()[1]
                 if player.name in self.room_player_map: # switching?
                     if self.room_player_map[player.name] == room_name:
-                        sock.sendall(b'You are already in room: ' + room_name.encode())
+                        player.socket.sendall(b'You are already in room: ' + room_name.encode())
                         same_room = True
                     else: # switch
                         old_room = self.room_player_map[player.name]
@@ -77,16 +73,16 @@ class Hall:
                     self.rooms[room_name].welcome_new(player)
                     self.room_player_map[player.name] = room_name
             else:
-                sock.sendall(instructions)
+                player.socket.sendall(instructions)
 
         elif "<list>" in msg:
-            self.list_rooms(sock) 
+            self.list_rooms(player) 
 
         elif "<manual>" in msg:
-            sock.sendall(instructions)
+            player.socket.sendall(instructions)
         
         elif "<quit>" in msg:
-            sock.sendall(QUIT_STRING.encode())
+            player.socket.sendall(QUIT_STRING.encode())
             self.remove_player(player)
 
         else:
@@ -97,22 +93,15 @@ class Hall:
                 msg = 'You are currently not in any room! \n' \
                     + 'Use [<list>] to see available rooms! \n' \
                     + 'Use [<join> room_name] to join a room! \n'
-                sock.sendall(msg.encode())
+                player.socket.sendall(msg.encode())
     
     def remove_player(self, player):
         if player.name in self.room_player_map:
             self.rooms[self.room_player_map[player.name]].remove_player(player)
             del self.room_player_map[player.name]
-        self.players.remove(player)
-        print("Player: " + player.name + "has left\n")
+        print("Player: " + player.name + " has left\n")
 
     
-    def find_player(self, player_socket):
-        for player in self.players:
-            if player.socket == player_socket:
-                return player
-        return Player(player_socket, "new")
-
 class Room:
     def __init__(self, name):
         self.players = [] # a list of sockets
@@ -134,6 +123,10 @@ class Room:
         self.broadcast(player, leave_msg)
 
 class Player:
-    def __init__(self, socket, name):
+    def __init__(self, socket, name = "new"):
+        socket.setblocking(0)
         self.socket = socket
         self.name = name
+
+    def fileno(self):
+        return self.socket.fileno()

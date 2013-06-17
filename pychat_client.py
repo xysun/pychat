@@ -8,24 +8,23 @@ if len(sys.argv) < 2:
     print("Usage: Python3 client.py [hostname]", file = sys.stderr)
     sys.exit(1)
 else:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.connect((sys.argv[1], pychat_util.PORT))
+    server_connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_connection.connect((sys.argv[1], pychat_util.PORT))
 
 def prompt():
-    sys.stdout.write('>')
-    sys.stdout.flush()
+    print('>', end=' ', flush = True)
 
 print("Connected to server\n")
 msg_prefix = ''
 
-socket_list = [sys.stdin, sock]
+socket_list = [sys.stdin, server_connection]
 
 while True:
     read_sockets, write_sockets, error_sockets = select.select(socket_list, [], [])
     for s in read_sockets:
-        if s is sock: # incoming message 
-            msg = sock.recv(READ_BUFFER)
+        if s is server_connection: # incoming message 
+            msg = s.recv(READ_BUFFER)
             if not msg:
                 print("Server down!")
                 sys.exit(2)
@@ -43,4 +42,4 @@ while True:
 
         else:
             msg = msg_prefix + sys.stdin.readline()
-            sock.sendall(msg.encode())
+            server_connection.sendall(msg.encode())
